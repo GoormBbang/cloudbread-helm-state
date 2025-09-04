@@ -1,0 +1,11 @@
+image:
+  repository: ncr.io/<your-project-namespace>/cloudbread-backend
+  tag: "latest"     # CI가 이 값을 커밋 SHA로 자동 교체
+  pullPolicy: IfNotPresent
+
+ingress:
+  host: cloudbread.133.186.213.185.nip.io   # NHN Cloud에서 노출된 Ingress 도메인
+
+envFromSecretName: app-env                  # 이미 클러스터에 있는 Secret 이름
+pvc:
+  claimName: uploads-pvc                    # 이미 만든 PVC 이름
