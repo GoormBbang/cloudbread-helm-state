@@ -3,9 +3,31 @@ image:
   tag: "7312f98"
   pullPolicy: IfNotPresent
 
-ingress:
-  host: cloudbread.133.186.213.185.nip.io   # NHN Cloud에서 노출된 Ingress 도메인
+# ingress:
+#   host: cloudbread.133.186.213.185.nip.io   # NHN Cloud에서 노출된 Ingress 도메인
 
 envFromSecretName: app-env                  # 이미 클러스터에 있는 Secret 이름
 pvc:
   claimName: uploads-pvc                    # 이미 만든 PVC 이름
+
+# ★ ingress 블록 “완전체”로 넣기 (없던 키 포함)
+ingress:
+  enabled: true
+  className: nginx
+  host: cloudbread.133.186.213.185.nip.io
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-http01"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+  paths:
+    - path: /api
+      pathType: Prefix
+    - path: /uploads
+      pathType: Prefix
+  tls:
+    - hosts:
+        - cloudbread.133.186.213.185.nip.io
+      secretName: cloudbread-backend-tls
