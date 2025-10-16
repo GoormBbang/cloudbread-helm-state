@@ -1,0 +1,94 @@
+---
+# Source: cloudbread-backend/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudbread-backend-svc
+  namespace: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: cloudbread-backend
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+# Source: cloudbread-backend/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudbread-backend
+  namespace: backend
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cloudbread-backend
+  template:
+    metadata:
+      labels:
+        app: cloudbread-backend
+    spec:
+      containers:
+        - name: cloudbread-backend
+          image: "docker.io/minjiki222/cloudbread-backend:f55b84b"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: app-env
+          volumeMounts:
+            - name: uploads
+              mountPath: /data/uploads
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: uploads-pvc
+---
+# Source: cloudbread-backend/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cloudbread-ing
+  namespace: backend
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: cloudbread.133.186.213.185.nip.io
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudbread-backend-svc
+                port:
+                  number: 80
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudbread-backend-svc
+                port:
+                  number: 80
