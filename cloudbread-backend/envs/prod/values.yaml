@@ -1,6 +1,6 @@
 image:
   repository: docker.io/minjiki222/cloudbread-backend
-  tag: "latest"     # CI가 이 값을 커밋 SHA로 자동 교체
+  tag: "23de932"
   pullPolicy: IfNotPresent
 
 ingress:
