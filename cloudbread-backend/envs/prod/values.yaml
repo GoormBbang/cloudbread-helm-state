@@ -1,6 +1,6 @@
 image:
   repository: docker.io/minjiki222/cloudbread-backend
-  tag: "4c52ecf"
+  tag: "e045ddf"
   pullPolicy: IfNotPresent
 
 ingress:
