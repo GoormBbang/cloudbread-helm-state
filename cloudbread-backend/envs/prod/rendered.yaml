@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: cloudbread-backend
-          image: "docker.io/minjiki222/cloudbread-backend:63e1d84"
+          image: "docker.io/minjiki222/cloudbread-backend:5af77d5"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
