@@ -34,8 +34,14 @@ spec:
     spec:
       containers:
         - name: cloudbread-backend
-          image: "docker.io/minjiki222/cloudbread-backend:3d261ff"
+          image: "docker.io/minjiki222/cloudbread-backend:50d1094"
           imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Asia/Seoul
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Duser.timezone=Asia/Seoul"
+
           ports:
             - containerPort: 8080
           envFrom:
