@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: cloudbread-backend
-          image: "docker.io/minjiki222/cloudbread-backend:46cc47a"
+          image: "docker.io/minjiki222/cloudbread-backend:ce9f0ec"
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
