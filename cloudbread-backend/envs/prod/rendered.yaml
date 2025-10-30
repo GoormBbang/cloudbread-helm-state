@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: cloudbread-backend
-          image: "docker.io/minjiki222/cloudbread-backend:7312f98"
+          image: "docker.io/minjiki222/cloudbread-backend:52dbdc9"
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -74,10 +74,12 @@ metadata:
   name: cloudbread-ing
   namespace: backend
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -98,3 +100,7 @@ spec:
                 name: cloudbread-backend-svc
                 port:
                   number: 80
+  tls:
+  - hosts:
+    - cloudbread.133.186.213.185.nip.io
+    secretName: cloudbread-backend-tls
